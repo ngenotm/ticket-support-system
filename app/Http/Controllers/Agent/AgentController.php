@@ -29,7 +29,9 @@ class AgentController extends Controller
             ->where('status', 'Closed')
             ->count();
 
-        $totalUsers = SiteUser::count();
+        $totalUsers = SiteUser::whereHas('tickets', function ($q) use ($agentId) {
+            $q->where('assigned_to', $agentId);
+        })->count();
 
         $assignedSiteUsers = SiteUser::with(['tickets' => function ($q) use ($agentId) {
             $q->where('assigned_to', $agentId);
@@ -133,13 +135,13 @@ class AgentController extends Controller
     {
 
         // dd($request->all());
- $user = SiteUser::with([
-    'tickets.category',
-    'tickets.subcategory',
-    'tickets.service',
-    'tickets.assignedUser',
-    'tickets.replies.siteUser'
-])->findOrFail($request->id);
+        $user = SiteUser::with([
+            'tickets.category',
+            'tickets.subcategory',
+            'tickets.service',
+            'tickets.assignedUser',
+            'tickets.replies.siteUser'
+        ])->findOrFail($request->id);
 
 
 
