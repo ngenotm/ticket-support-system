@@ -141,190 +141,160 @@
                 </div>
             </div>
 
-            <!-- Right Section -->
-            <div class="col-lg-4">
-                <!-- Ticket Info -->
-                <div class="card mb-3">
-                    <div class="card-header bg-light fw-bold">Ticket Information</div>
-                    <div class="card-body small">
-                        <p><strong>Ticket Track ID:</strong> {{ $ticket->ticket_track_id }}</p>
-                        <p><strong>Ticket User:</strong> {{ $ticket->siteUser->username ?? 'N/A' }}</p>
-                        <p><strong>Email:</strong> {{ $ticket->siteUser->email ?? 'N/A' }}</p>
-                        <p><strong>Priority:</strong> {{ ucfirst($ticket->priority) }}</p>
-                        <p><strong>Category:</strong> {{ $ticket->category->name ?? 'N/A' }}</p>
-                        <p><strong>Subcategory:</strong> {{ $ticket->subcategory->name ?? 'N/A' }}</p>
-                        <p><strong>Service:</strong> {{ $ticket->service->name ?? 'N/A' }}</p>
-                        <p><strong>Service URL:</strong> {{ $ticket->service_url ?? '-' }}</p>
+   <!-- Right Section -->
+<div class="col-lg-4">
 
-                        <p class="mt-2"><strong>Assigned On:</strong>
+    <!-- Ticket Info -->
+    <div class="card mb-3 shadow-sm rounded-2 border">
+        <div class="card-header bg-light fw-bold">Ticket Information</div>
+        <div class="card-body small">
+            <p><strong>Ticket Track ID:</strong> {{ $ticket->ticket_track_id }}</p>
+            <p><strong>Ticket User:</strong> {{ $ticket->siteUser->username ?? 'N/A' }}</p>
+            <p><strong>Email:</strong> {{ $ticket->siteUser->email ?? 'N/A' }}</p>
+            <p><strong>Priority:</strong> {{ ucfirst($ticket->priority) }}</p>
+            <p><strong>Category:</strong> {{ $ticket->category->name ?? 'N/A' }}</p>
+            <p><strong>Subcategory:</strong> {{ $ticket->subcategory->name ?? 'N/A' }}</p>
+            <p><strong>Service:</strong> {{ $ticket->service->name ?? 'N/A' }}</p>
+            <p><strong>Service URL:</strong> {{ $ticket->service_url ?? '-' }}</p>
 
-                        <div class="d-flex align-items-center mt-2">
-                            @if(!empty($ticket->assignee->img_url))
-                                <img src="{{ asset($ticket->assignee->img_url) }}" class="rounded-circle" width="35"
-                                    height="35">
-                            @else
-                                <img src="{{ asset('images/default-user.png') }}" class="rounded-circle" width="35" height="35">
-                            @endif
-                            <div class="ms-2">
-                                <div class="fw-bold">{{ $ticket->assignee->user ?? 'App User' }}</div>
-                                <small class="text-muted">{{ $ticket->assignee->role->role_name ?? 'No Role' }}</small>
-                            </div>
-                        </div>
-
-                        </p>
-
-                        <p><strong>Opened:</strong> {{ $ticket->opened_time }}</p>
-                        <p><strong>Status:</strong> {{ ucfirst($ticket->status) }}</p>
-
-                        <p><strong>Last Updated:</strong> {{ $ticket->updated_at->diffForHumans() }}</p>
-
-
-                    </div>
-                    <hr>
-                    <!-- Attachments Section -->
-                    @if($ticket->attachments && $ticket->attachments->count())
-                        <div class="m-2">
-                            <h6 class="fw-bold mb-1">📎 Attachments</h6>
-                            <div class="d-flex flex-wrap gap-3 mt-2">
-                                @foreach($ticket->attachments as $file)
-                                    @php
-                                        $isImage = in_array(strtolower(pathinfo($file->file_name, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp']);
-                                    @endphp
-
-                                    @if($isImage)
-                                        <!-- Image thumbnail -->
-                                        <div class="border p-2 rounded bg-light text-center" style="width: 120px;">
-                                            <a href="{{ asset($file->file_path) }}" target="_blank">
-                                                <img src="{{ asset($file->file_path) }}" alt="{{ $file->file_name }}"
-                                                    class="img-fluid rounded mb-1" style="max-height: 100px;">
-                                            </a>
-                                            <div class="small text-truncate">{{ $file->file_name }}</div>
-                                        </div>
-                                    @else
-                                        <!-- Non-image file -->
-                                        <div class="border p-2 rounded bg-light d-flex align-items-center">
-                                            <i class="bi bi-paperclip me-2"></i>
-                                            <a href="{{ asset($file->file_path) }}" target="_blank" class="text-decoration-none small">
-                                                {{ $file->file_name }}
-                                            </a>
-                                        </div>
-                                    @endif
-                                @endforeach
-                            </div>
-                        </div>
-                    @else
-                        <p class="text-muted mt-3">No attachments found.</p>
-                    @endif
-
-                </div>
-
-                <!-- Admin Notes -->
-                <!-- Admin Notes -->
-                <div class="card mb-3" id="admin-notes-card">
-                    <div
-                        class="card-header bg-success text-white fw-bold d-flex justify-content-between align-items-center">
-                        <span>Admin Notes</span>
-                        <button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#addNoteForm">
-                            + Add Note
-                        </button>
-                    </div>
-
-                    <div class="card-body">
-                        @if($ticket->adminNotes->isEmpty())
-                            <div class="small text-muted"><em>No notes found</em></div>
-                        @else
-                            @foreach($ticket->adminNotes()->latest()->get() as $note)
-                                <div class="border-bottom mb-3 pb-2">
-                                    <div class="d-flex justify-content-between">
-
-                                        <strong>{{ $note->creator->user }}</strong> --
-                                        <strong>
-                                            {{ $note->creator->role->role_name }}
-                                        </strong>
-                                        <br>
-                                        <span class="text-muted small">
-                                            {{ $note->created_at->format('d M Y, h:i A') }}
-                                        </span>
-                                    </div>
-                                    <div
-                                        class="badge bg-{{ $note->visibility === 'team' ? 'info' : ($note->visibility === 'public' ? 'primary' : 'secondary') }}">
-                                        {{ ucfirst($note->visibility) }}
-
-                                    </div>
-                                    @if($note->title)
-                                        <div class="fw-semibold mt-1">{{ $note->title }}</div>
-                                    @endif
-                                    <div class="text-muted small mt-1">{!! nl2br(e($note->body)) !!}</div>
-                                </div>
-                            @endforeach
-                        @endif
-                    </div>
-
-                    <!-- Collapsible Add Note Form -->
-                    <div class="collapse" id="addNoteForm">
-                        <div class="card-footer bg-light">
-                            <form action="{{ route('agent.notes.store') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
-                                <input type="hidden" name="ticket_track_id" value="{{ $ticket->ticket_track_id }}">
-                                <input type="hidden" name="note_type" value="ticket">
-
-                                <div class="mb-2">
-                                    <label class="form-label small">Title</label>
-                                    <input type="text" name="title" class="form-control form-control-sm"
-                                        placeholder="Optional short title">
-                                </div>
-
-                                <div class="mb-2">
-                                    <label class="form-label small">Note</label>
-                                    <textarea name="body" rows="3" class="form-control form-control-sm"
-                                        placeholder="Write your note here..." required></textarea>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6 mb-2">
-                                        <label class="form-label small">Visibility</label>
-                                        <select name="visibility" class="form-select form-select-sm">
-                                            <option value="private">Private (Only Me)</option>
-                                            <option value="team">Team (All Admins)</option>
-                                            <option value="public">Public (Visible to Client)</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6 mb-2 d-flex align-items-end justify-content-end">
-                                        <button type="submit" class="btn btn-success btn-sm">
-                                            💾 Save Note
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Admin Work Log -->
-                <div class="card mb-3">
-                    <div
-                        class="card-header bg-success text-white fw-bold d-flex justify-content-between align-items-center">
-                        <span>Admin Work Log -?</span>
-                        <button class="btn btn-light btn-sm">+ Add Log</button>
-                    </div>
-                    <div class="card-body small text-muted">
-                        <em>No work log found</em>
-                    </div>
-                </div>
-
-                <!-- Ticket History -->
-                <div class="card">
-                    <div class="card-header bg-light fw-bold">Ticket History</div>
-                    <div class="card-body small text-muted">
-                        <p><strong>Opened By:</strong> {{ $ticket->siteUser->username ?? 'N/A' }} <br>
-                            <small>{{ $ticket->opened_time }}</small>
-                        </p>
-                    </div>
+            <p class="mt-2"><strong>Assigned On:</strong></p>
+            <div class="d-flex align-items-center mt-2">
+                <img src="{{ $ticket->assignee->img_url ?? asset('images/default-user.png') }}" class="rounded-circle" width="35" height="35">
+                <div class="ms-2">
+                    <div class="fw-bold">{{ $ticket->assignee->user ?? 'App User' }}</div>
+                    <small class="text-muted">{{ $ticket->assignee->role->role_name ?? 'No Role' }}</small>
                 </div>
             </div>
+
+            <p class="mt-2"><strong>Opened:</strong> {{ $ticket->opened_time }}</p>
+            <p><strong>Status:</strong> <span class="badge 
+                @if($ticket->status === 'New') bg-primary
+                @elseif($ticket->status === 'Closed') bg-dark
+                @elseif($ticket->status === 'Pending') bg-warning text-dark
+                @else bg-success @endif">
+                {{ ucfirst($ticket->status) }}
+            </span></p>
+            <p><strong>Last Updated:</strong> {{ $ticket->updated_at->diffForHumans() }}</p>
+        </div>
+
+        <!-- Attachments -->
+        <hr class="my-0">
+        <div class="card-body pt-2 pb-3">
+            <h6 class="fw-bold mb-2">📎 Attachments</h6>
+            @if($ticket->attachments && $ticket->attachments->count())
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach($ticket->attachments as $file)
+                        @php
+                            $isImage = in_array(strtolower(pathinfo($file->file_name, PATHINFO_EXTENSION)), ['jpg','jpeg','png','gif','webp']);
+                        @endphp
+                        @if($isImage)
+                            <div class="border rounded bg-light text-center p-2" style="width:120px;">
+                                <a href="{{ asset($file->file_path) }}" target="_blank">
+                                    <img src="{{ asset($file->file_path) }}" class="img-fluid rounded mb-1" style="max-height:100px;">
+                                </a>
+                                <div class="small text-truncate">{{ $file->file_name }}</div>
+                            </div>
+                        @else
+                            <div class="border rounded bg-light d-flex align-items-center p-2">
+                                <i class="bi bi-paperclip me-2"></i>
+                                <a href="{{ asset($file->file_path) }}" target="_blank" class="small text-decoration-none">{{ $file->file_name }}</a>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            @else
+                <p class="text-muted small mb-0">No attachments found.</p>
+            @endif
+        </div>
+    </div>
+
+    <!-- Admin Notes -->
+    <div class="card mb-3 shadow-sm rounded-2 border">
+        <div class="card-header bg-success text-white fw-bold d-flex justify-content-between align-items-center">
+            <span>Admin Notes</span>
+            <button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#addNoteForm">
+                + Add Note
+            </button>
+        </div>
+
+        <div class="card-body small">
+            @forelse($ticket->adminNotes()->latest()->get() as $note)
+                <div class="border-bottom pb-2 mb-2">
+                    <div class="d-flex justify-content-between">
+                        <strong>{{ $note->creator->user }}</strong> -- <strong>{{ $note->creator->role->role_name }}</strong>
+                        <span class="text-muted small">{{ $note->created_at->format('d M Y, h:i A') }}</span>
+                    </div>
+                    <div class="badge bg-{{ $note->visibility === 'team' ? 'info' : ($note->visibility === 'public' ? 'primary' : 'secondary') }}">
+                        {{ ucfirst($note->visibility) }}
+                    </div>
+                    @if($note->title)
+                        <div class="fw-semibold mt-1">{{ $note->title }}</div>
+                    @endif
+                    <div class="text-muted small mt-1">{!! nl2br(e($note->body)) !!}</div>
+                </div>
+            @empty
+                <div class="small text-muted"><em>No notes found</em></div>
+            @endforelse
+        </div>
+
+        <!-- Add Note Form -->
+        <div class="collapse" id="addNoteForm">
+            <div class="card-footer bg-light">
+                <form action="{{ route('agent.notes.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
+                    <input type="hidden" name="ticket_track_id" value="{{ $ticket->ticket_track_id }}">
+                    <input type="hidden" name="note_type" value="ticket">
+
+                    <div class="mb-2">
+                        <label class="form-label small">Title</label>
+                        <input type="text" name="title" class="form-control form-control-sm" placeholder="Optional short title">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small">Note</label>
+                        <textarea name="body" rows="3" class="form-control form-control-sm" placeholder="Write your note here..." required></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-2">
+                            <label class="form-label small">Visibility</label>
+                            <select name="visibility" class="form-select form-select-sm">
+                                <option value="private">Private (Only Me)</option>
+                                <option value="team">Team (All Admins)</option>
+                                <option value="public">Public (Visible to Client)</option>
+                            </select>
+                        </div>
+                        <div class="col-6 d-flex align-items-end justify-content-end mb-2">
+                            <button type="submit" class="btn btn-success btn-sm">💾 Save Note</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Work Log -->
+    <div class="card mb-3 shadow-sm rounded-2 border">
+        <div class="card-header bg-success text-white fw-bold d-flex justify-content-between align-items-center">
+            <span>Admin Work Log</span>
+            <button class="btn btn-light btn-sm">+ Add Log</button>
+        </div>
+        <div class="card-body small text-muted">
+            <em>No work log found</em>
+        </div>
+    </div>
+
+    <!-- Ticket History -->
+    <div class="card shadow-sm rounded-2 border">
+        <div class="card-header bg-light fw-bold">Ticket History</div>
+        <div class="card-body small text-muted">
+            <p><strong>Opened By:</strong> {{ $ticket->siteUser->username ?? 'N/A' }} <br>
+            <small>{{ $ticket->opened_time }}</small></p>
+        </div>
+    </div>
+</div>
+
+
         </div>
     </div>
 @endsection

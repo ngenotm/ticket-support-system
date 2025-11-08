@@ -1,4 +1,4 @@
-<div class="sidebar d-flex flex-column p-3 bg-white shadow-sm rounded-2" id="sidebar" style="width: 250px; min-height: 100vh;">
+<div class="sidebar d-flex flex-column p-3 bg-white shadow-sm rounded-2" id="sidebar" style="width: 250px; height: 100vh;">
     <!-- Sidebar Header -->
     <h4 class="text-center py-3 fw-semibold text-secondary">Ticket Admin</h4>
 
