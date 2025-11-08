@@ -1,5 +1,4 @@
 <div class="row g-3">
-
     {{-- Category --}}
     <div class="col-md-4">
         <label class="form-label">Category</label>
@@ -16,8 +15,7 @@
     {{-- Subcategory --}}
     <div class="col-md-4">
         <label class="form-label">Subcategory</label>
-        <select name="subcat_id" id="subcat_id" class="form-select"
-                data-selected="{{ old('subcat_id', $ticket->subcat_id ?? '') }}">
+        <select name="subcat_id" id="subcat_id" class="form-select" data-selected="{{ old('subcat_id', $ticket->subcat_id ?? '') }}">
             <option value="">Select Subcategory</option>
         </select>
     </div>
@@ -25,8 +23,7 @@
     {{-- Service --}}
     <div class="col-md-4">
         <label class="form-label">Service</label>
-        <select name="service_id" id="service_id" class="form-select"
-                data-selected="{{ old('service_id', $ticket->service_id ?? '') }}">
+        <select name="service_id" id="service_id" class="form-select" data-selected="{{ old('service_id', $ticket->service_id ?? '') }}">
             <option value="">Select Service</option>
         </select>
     </div>
@@ -34,8 +31,7 @@
     {{-- Title --}}
     <div class="col-md-12">
         <label class="form-label">Title</label>
-        <input type="text" name="title" class="form-control" 
-               value="{{ old('title', $ticket->title ?? '') }}" required>
+        <input type="text" name="title" class="form-control" value="{{ old('title', $ticket->title ?? '') }}" required>
     </div>
 
     {{-- Description --}}
@@ -43,22 +39,6 @@
         <label class="form-label">Description</label>
         <textarea name="ticket_body" class="form-control" rows="4" required>{{ old('ticket_body', $ticket->ticket_body ?? '') }}</textarea>
     </div>
-
-    {{-- Attachments --}}
-    {{-- <div class="col-md-12">
-        <label class="form-label">Attachments (multiple)</label>
-        <input type="file" name="attachments[]" class="form-control" multiple>
-
-        @if(!empty($ticket) && $ticket->attachments)
-            <div class="mt-2">
-                @foreach($ticket->attachments as $file)
-                    <a href="{{ asset('storage/' . $file->file_path) }}" target="_blank">
-                        {{ $file->file_name }}
-                    </a><br>
-                @endforeach
-            </div>
-        @endif
-    </div> --}}
 
     {{-- Assign --}}
     <div class="col-md-6">
@@ -92,9 +72,8 @@
     </div>
 </div>
 
-{{-- Script for dependent dropdowns --}}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     const catSelect = document.getElementById('cat_id');
     const subSelect = document.getElementById('subcat_id');
     const serviceSelect = document.getElementById('service_id');
@@ -102,11 +81,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const preSelectedSub = subSelect.dataset.selected || '';
     const preSelectedService = serviceSelect.dataset.selected || '';
 
-    function clearSelect(el, placeholder = 'Select') {
+    const clearSelect = (el, placeholder = 'Select') => {
         el.innerHTML = `<option value="">${placeholder}</option>`;
-    }
+    };
 
-    async function fetchJson(url) {
+    const fetchJson = async (url) => {
         try {
             const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
             if (!res.ok) return [];
@@ -115,16 +94,14 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Fetch error', err);
             return [];
         }
-    }
+    };
 
-    async function loadSubcategories(catId, selectedSub = '') {
+    const loadSubcategories = async (catId, selectedSub = '') => {
         clearSelect(subSelect, 'Select Subcategory');
         clearSelect(serviceSelect, 'Select Service');
         if (!catId) return;
 
         const data = await fetchJson(`/admin/subcategories/${catId}`);
-        if (!Array.isArray(data)) return;
-
         data.forEach(sub => {
             const opt = document.createElement('option');
             opt.value = sub.id;
@@ -133,18 +110,14 @@ document.addEventListener('DOMContentLoaded', function() {
             subSelect.appendChild(opt);
         });
 
-        if (selectedSub) {
-            await loadServices(selectedSub, preSelectedService);
-        }
-    }
+        if (selectedSub) await loadServices(selectedSub, preSelectedService);
+    };
 
-    async function loadServices(subId, selectedService = '') {
+    const loadServices = async (subId, selectedService = '') => {
         clearSelect(serviceSelect, 'Select Service');
         if (!subId) return;
 
         const data = await fetchJson(`/admin/services/${subId}`);
-        if (!Array.isArray(data)) return;
-
         data.forEach(s => {
             const opt = document.createElement('option');
             opt.value = s.id;
@@ -152,19 +125,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (String(s.id) === String(selectedService)) opt.selected = true;
             serviceSelect.appendChild(opt);
         });
-    }
+    };
 
-    catSelect.addEventListener('change', function() {
-        loadSubcategories(this.value);
-    });
-
-    subSelect.addEventListener('change', function() {
-        loadServices(this.value);
-    });
+    catSelect.addEventListener('change', () => loadSubcategories(catSelect.value));
+    subSelect.addEventListener('change', () => loadServices(subSelect.value));
 
     const existingCat = "{{ old('cat_id', $ticket->cat_id ?? '') }}";
-    if (existingCat) {
-        loadSubcategories(existingCat, preSelectedSub);
-    }
+    if (existingCat) loadSubcategories(existingCat, preSelectedSub);
 });
 </script>

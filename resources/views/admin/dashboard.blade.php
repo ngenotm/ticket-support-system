@@ -4,65 +4,68 @@
 @section('page_title', 'Admin Dashboard')
 
 @section('content')
-    <!-- Dashboard Cards -->
     <div class="row mb-4">
+        <!-- Tickets Card -->
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-primary">
+            <div class="card shadow-sm rounded-2 border-0">
                 <div class="card-body">
-                    <h5 class="card-title">Tickets</h5>
-                    <p class="card-text">{{ $ticketCount }} Total</p>
+                    <h6 class="text-secondary fw-semibold mb-2">Tickets</h6>
+                    <p class="h5 mb-0">{{ $ticketCount }} Total</p>
                 </div>
             </div>
         </div>
+
+        <!-- Users Card -->
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-success">
+            <div class="card shadow-sm rounded-2 border-0">
                 <div class="card-body">
-                    <h5 class="card-title">Users</h5>
-                    <p class="card-text">{{ $siteUUserCount }} Total</p>
+                    <h6 class="text-secondary fw-semibold mb-2">Users</h6>
+                    <p class="h5 mb-0">{{ $siteUUserCount }} Total</p>
                 </div>
             </div>
         </div>
+
+        <!-- Open Tickets Card -->
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-warning">
+            <div class="card shadow-sm rounded-2 border-0">
                 <div class="card-body">
-                    <h5 class="card-title">Open Tickets</h5>
-                    <p class="card-text">{{$ticketCount - $closedTickets }}</p>
+                    <h6 class="text-secondary fw-semibold mb-2">Open Tickets</h6>
+                    <p class="h5 mb-0">{{ $ticketCount - $closedTickets }}</p>
                 </div>
             </div>
         </div>
+
+        <!-- Closed Tickets Card -->
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-danger">
+            <div class="card shadow-sm rounded-2 border-0">
                 <div class="card-body">
-                    <h5 class="card-title">Closed Tickets</h5>
-                    <p class="card-text">{{ $closedTickets }}</p>
+                    <h6 class="text-secondary fw-semibold mb-2">Closed Tickets</h6>
+                    <p class="h5 mb-0">{{ $closedTickets }}</p>
                 </div>
             </div>
         </div>
     </div>
-
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">Recent Users</div>
-                <div class="card-body">
-                    <table class="table table-striped align-middle">
-                        <thead>
+            <div class="card shadow-sm rounded-2 border-0">
+                <div class="card-header bg-white border-bottom fw-semibold text-secondary">
+                    Recent Users
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
                             <tr>
-                                <th>ID</th>
-                                <th>Username</th>
-                                <th>Status</th>
-                                <th>Tickets</th>
-                                <th>Replies</th>
-                                <th>Last Login</th>
-                                <th>Last Reply</th>
+                                <th class="fw-semibold text-secondary">ID</th>
+                                <th class="fw-semibold text-secondary">Username</th>
+                                <th class="fw-semibold text-secondary">Status</th>
+                                <th class="fw-semibold text-secondary">Tickets</th>
+                                <th class="fw-semibold text-secondary">Replies</th>
+                                <th class="fw-semibold text-secondary">Last Login</th>
+                                <th class="fw-semibold text-secondary">Last Reply</th>
                             </tr>
                         </thead>
                         <tbody>
-
-
-
                             @forelse ($siteUser as $users)
-
                                 @php
                                     $borderColor = $users->activeSubscription?->currentPlan?->border_color
                                         ?? $users->currentPlan?->border_color
@@ -71,7 +74,6 @@
                                         ?? $users->currentPlan?->title
                                         ?? 'No active plan';
                                 @endphp
-
                                 <tr>
                                     <td>{{ $users->id }}</td>
 
@@ -80,45 +82,43 @@
                                         @if ($users->photo_url)
                                             <img src="{{ asset($users->photo_url) }}" title="{{ $planTitle }}" alt="User" width="40"
                                                 height="40" class="rounded-circle"
-                                                style="border: 3px solid {{ $borderColor }}; padding: 2px;">
+                                                style="border: 2px solid {{ $borderColor }}; padding: 1px;">
                                         @else
                                             <div class="rounded-circle d-inline-flex align-items-center justify-content-center"
-                                                style="width: 40px; height: 40px; border: 3px solid {{ $borderColor }}; background: #f8f9fa;">
+                                                style="width: 40px; height: 40px; border: 2px solid {{ $borderColor }}; background: #f8f9fa;">
                                                 <i class="fa fa-user text-muted"></i>
                                             </div>
                                         @endif
 
                                         {{-- Username with Modal Trigger --}}
-                                        <a href="javascript:void(0);" class="btn btn-sm  viewAdminUserBtn"
-                                            data-id="{{ $users->id }}"  style=" border: 3px solid {{ $borderColor }};">
-                                            <i class="fa fa-eye"></i> {{ $users->username }}
+                                        <a href="javascript:void(0);" class="btn btn-sm btn-outline-primary viewAdminUserBtn"
+                                            data-id="{{ $users->id }}">
+                                            <i class="fa fa-eye me-1"></i> {{ $users->username }}
                                         </a>
                                     </td>
 
-
                                     <td>
-                                      <span class="badge bg-success">{{ $users->status }}</span>
+                                        <span class="badge bg-light text-success fw-semibold">{{ $users->status }}</span>
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-info">{{ $users->tickets_count }}</span>
+                                        <span class="badge bg-light text-info fw-semibold">{{ $users->tickets_count }}</span>
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-warning text-dark">{{ $users->ticket_replies_count }}</span>
+                                        <span
+                                            class="badge bg-light text-warning fw-semibold">{{ $users->ticket_replies_count }}</span>
                                     </td>
 
-                                    <td>
+                                    <td class="text-secondary">
                                         {{ $users->last_login_at ? $users->last_login_at->format('d M Y, h:i A') : '—' }}
                                     </td>
 
-                                    <td>
+                                    <td class="text-secondary">
                                         {{ $users->ticket_replies_max_created_at ? \Carbon\Carbon::parse($users->ticket_replies_max_created_at)->format('d M Y, h:i A') : '—' }}
                                     </td>
                                 </tr>
                             @empty
-
-
                                 <tr>
                                     <td colspan="7" class="text-center text-muted">No users found.</td>
                                 </tr>
@@ -130,73 +130,79 @@
         </div>
     </div>
 
-
     <div class="modal fade" id="adminUserViewModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title">👤 User & Ticket Details</h5>
+            <div class="modal-content shadow-sm rounded-2 border-0">
+                <!-- Modal Header -->
+                <div class="modal-header bg-white border-bottom">
+                    <h5 class="modal-title text-secondary fw-semibold">👤 User & Ticket Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <div class="modal-body">
+                <!-- Modal Body -->
+                <div class="modal-body p-4">
                     <!-- SECTION 1: User Info -->
-                    <div id="admin-user-info-section"></div>
-                    <hr>
+                    <div id="admin-user-info-section" class="mb-4">
+                        <!-- Dynamic user info content -->
+                    </div>
+
+                    <hr class="my-4">
+
                     <!-- SECTION 2: Tickets & Replies -->
-                    <div id="admin-user-tickets-section"></div>
+                    <div id="admin-user-tickets-section">
+                        <!-- Dynamic tickets & replies content -->
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
-
     <div class="row mb-4">
         <!-- Latest Ticket Replies -->
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">💬 Latest Ticket Replies</div>
-                <div class="card-body" style="height: 600px; overflow-y: auto;" id="liveChatBox">
-
+            <div class="card shadow-sm rounded-2 border-0">
+                <div class="card-header bg-white fw-semibold text-secondary border-bottom">
+                    💬 Latest Ticket Replies
+                </div>
+                <div class="card-body p-3" style="height: 600px; overflow-y: auto;" id="liveChatBox">
                     @forelse ($ticketReplies as $reply)
-                        <div class="mb-2 p-2 border rounded shadow-sm">
-                            <strong>From:</strong>
-                            @if($reply->isFromAdmin())
-                                {{ $reply->appUser?->name ?? 'Admin User' }}
-                            @elseif($reply->isFromClient())
-                                {{ $reply->siteUser?->username ?? 'Client User' }}
-                            @else
-                                Unknown
-                            @endif
-                            <br>
-
-                            <strong>To:</strong>
-                            @if($reply->isFromAdmin())
-                                {{ $reply->siteUser?->username ?? 'Client' }}
-                            @elseif($reply->isFromClient())
-                                {{ $reply->appUser?->name ?? 'Admin' }}
-                            @else
-                                Unknown
-                            @endif
-                            <br>
-
-                            <strong>Message:</strong> {{ $reply->reply_body }}
-                            <br>
-
-                            <strong>Status:</strong> {{ $reply->ticket?->status ?? 'N/A' }}
-                            <br>
-
-                            <strong>Read:</strong>
-                            @if($reply->is_read)
-                                ✅ Yes (at {{ optional($reply->read_at)->format('d M Y, h:i A') }})
-                            @else
-                                ❌ No
-                            @endif
-                            <br>
-
+                        <div class="mb-3 p-3 border rounded-2 shadow-sm bg-white">
+                            <p class="mb-1"><strong>From:</strong>
+                                @if($reply->isFromAdmin())
+                                    {{ $reply->appUser?->name ?? 'Admin User' }}
+                                @elseif($reply->isFromClient())
+                                    {{ $reply->siteUser?->username ?? 'Client User' }}
+                                @else
+                                    Unknown
+                                @endif
+                            </p>
+                            <p class="mb-1"><strong>To:</strong>
+                                @if($reply->isFromAdmin())
+                                    {{ $reply->siteUser?->username ?? 'Client' }}
+                                @elseif($reply->isFromClient())
+                                    {{ $reply->appUser?->name ?? 'Admin' }}
+                                @else
+                                    Unknown
+                                @endif
+                            </p>
+                            <p class="mb-1"><strong>Message:</strong> {{ $reply->reply_body }}</p>
+                            <p class="mb-1"><strong>Status:</strong> {{ $reply->ticket?->status ?? 'N/A' }}</p>
+                            <p class="mb-1"><strong>Read:</strong>
+                                @if($reply->is_read)
+                                    ✅ Yes (at {{ optional($reply->read_at)->format('d M Y, h:i A') }})
+                                @else
+                                    ❌ No
+                                @endif
+                            </p>
                             <small class="text-muted">Sent: {{ $reply->created_at->format('d M Y, h:i A') }}</small>
-                            <div class="mt-2">
-                                <a href="{{ route('admin.tickets.show', $reply->ticket_id) }}" class="btn btn-sm btn-info">
-                                    <i class="fa fa-eye"></i> View Conversation
+                            <div class="mt-2 text-end">
+                                <a href="{{ route('admin.tickets.show', $reply->ticket_id) }}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fa fa-eye me-1"></i> View Conversation
                                 </a>
                             </div>
                         </div>
@@ -207,13 +213,15 @@
             </div>
         </div>
 
-        <!-- 🔥 Dummy Live Chat Preview -->
+        <!-- Live Chat Preview -->
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">🟢 Live Chat (Demo)</div>
-                <div class="card-body" style="height: 600px; overflow-y: auto; background-color: #f9fafb;">
+            <div class="card shadow-sm rounded-2 border-0">
+                <div class="card-header bg-white fw-semibold text-secondary border-bottom">
+                    🟢 Live Chat (Demo)
+                </div>
+                <div class="card-body p-3" style="height: 600px; overflow-y: auto; background-color: #f9fafb;">
                     <div class="chat-message mb-3">
-                        <div class="p-2 bg-light border rounded w-75">
+                        <div class="p-2 bg-light border rounded-2 w-75">
                             <strong>Client (Priyanka):</strong><br>
                             Hi, I’m facing an issue with my printer. It keeps showing “Paper Jam”.
                             <br>
@@ -222,7 +230,7 @@
                     </div>
 
                     <div class="chat-message text-end mb-3">
-                        <div class="p-2 bg-primary text-white border rounded w-75 d-inline-block">
+                        <div class="p-2 bg-primary text-white rounded-2 w-75 d-inline-block">
                             <strong>Admin (TechSupport):</strong><br>
                             Hello Priyanka! Please check if there’s any paper stuck in the rear tray.
                             <br>
@@ -231,7 +239,7 @@
                     </div>
 
                     <div class="chat-message mb-3">
-                        <div class="p-2 bg-light border rounded w-75">
+                        <div class="p-2 bg-light border rounded-2 w-75">
                             <strong>Client (Priyanka):</strong><br>
                             I checked. There’s nothing stuck, but the error remains.
                             <br>
@@ -240,7 +248,7 @@
                     </div>
 
                     <div class="chat-message text-end mb-3">
-                        <div class="p-2 bg-primary text-white border rounded w-75 d-inline-block">
+                        <div class="p-2 bg-primary text-white rounded-2 w-75 d-inline-block">
                             <strong>Admin (TechSupport):</strong><br>
                             Try turning the printer off for 30 seconds and power it back on.
                             <br>
@@ -249,7 +257,7 @@
                     </div>
 
                     <div class="chat-message mb-3">
-                        <div class="p-2 bg-light border rounded w-75">
+                        <div class="p-2 bg-light border rounded-2 w-75">
                             <strong>Client (Priyanka):</strong><br>
                             That worked! Thank you. 😊
                             <br>
@@ -257,18 +265,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer">
-                    {{-- <form id="dummyChatForm">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Type a message..." disabled>
-                            <button class="btn btn-secondary" type="button" disabled>Send</button>
-                        </div>
-                    </form> --}}
+                <div class="card-footer border-top-0 bg-white text-end">
+                    <button class="btn btn-outline-primary" disabled>Send (Demo)</button>
                 </div>
             </div>
         </div>
     </div>
-
 
 @endsection
 

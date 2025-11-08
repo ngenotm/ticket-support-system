@@ -4,84 +4,72 @@
 @section('content')
     <div class="container-fluid mt-3">
         <div class="row">
+
+
             <!-- Left Section -->
             <div class="col-lg-8 mb-4">
                 <div class="card">
+                    <!-- Header -->
                     <div class="card-header bg-light d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">🎫 Ticket Details</h5>
-                        <span class=" small text-primary">{{ $ticket->ticket_track_id }}</span>
+                        <span class="small text-primary">{{ $ticket->ticket_track_id }}</span>
                     </div>
-                    <div class="card-body py-0">
+
+                    <div class="card-body py-2">
                         <!-- Ticket Title & Body -->
                         <h5 class="fw-bold">{{ $ticket->title }}</h5>
-                        <p>{{ $ticket->ticket_body }}</p>
-                        <div class=" shadow-sm  ">
-                            <!-- 🎟️ Ticket Header -->
-                            <div class="d-flex align-items-center   bg-white shadow-sm rounded-3 ">
-                                <div class="text-center">
-                                    @if(!empty($ticket->siteUser->photo_url))
-                                        <img src="{{ asset($ticket->siteUser->photo_url) }}" class="rounded-circle border"
-                                            width="55" height="55" alt="User">
-                                    @else
-                                        <img src="{{ asset('images/default-user.png') }}" class="rounded-circle border"
-                                            width="55" height="55" alt="User">
-                                    @endif
-                                    <div class=" ms-3">
-                                        <h5 class="mb-0">{{ $ticket->siteUser->username ?? 'Unknown User' }}</h5>
-                                        <small class="text-muted">
-                                            Opened:
-                                            {{ \Carbon\Carbon::parse($ticket->opened_time)->format('d M Y, h:i A') }}
-                                        </small>
-                                    </div>
-                                </div>
+                        <p class="mb-3">{{ $ticket->ticket_body }}</p>
 
-                                <!-- 💬 Ticket Conversation -->
-                                <div class="flex-grow-1  ">
-                                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                                        <h5 class="mb-0">💬 Conversation</h5>
-                                        <small class="text-muted">All public and internal replies</small>
-                                    </div>
-
-                                    <div class="card-body" id="ticket_replies_box"
-                                        style="max-height: 420px; overflow-y: auto;">
-                                        <div class="text-center text-muted py-3" id="no_replies">
-                                            <em>No replies yet.</em>
-                                        </div>
-                                    </div>
-
-
+                        <!-- Ticket Info Header -->
+                        <div class="d-flex bg-white shadow-sm rounded-3 p-3 mb-3">
+                            <div class="text-center">
+                                <img src="{{ asset($ticket->siteUser->photo_url ?? 'images/default-user.png') }}"
+                                    class="rounded-circle border" width="55" height="55" alt="User">
+                                <div class="ms-3">
+                                    <h5 class="mb-0">{{ $ticket->siteUser->username ?? 'Unknown User' }}</h5>
+                                    <small class="text-muted">
+                                        Opened: {{ \Carbon\Carbon::parse($ticket->opened_time)->format('d M Y, h:i A') }}
+                                    </small>
                                 </div>
                             </div>
 
-
+                            <!-- Conversation Box -->
+                            <div class="flex-grow-1 ms-4">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">💬 Conversation</h6>
+                                    <small class="text-muted">All public and internal replies</small>
+                                </div>
+                                <div class="card-body" id="ticket_replies_box" style="max-height:420px; overflow-y:auto;">
+                                    <div class="text-center text-muted py-3" id="no_replies">
+                                        <em>No replies yet.</em>
+                                    </div>
+                                    <!-- Dynamic replies will be appended here via JS/AJAX -->
+                                </div>
+                            </div>
                         </div>
-
-
-
-
 
                         <hr>
 
                         <!-- Current Status -->
-                        <div class="fw-bold">
-                            Current Ticket Status :
+                        <div class="fw-bold mb-3">
+                            Current Ticket Status:
                             <span class="text-primary">🟢 {{ ucfirst($ticket->status) }}</span>
                         </div>
-                        <hr>
 
-
-
-                        <div class="mt-4 border p-3 rounded bg-light">
+                        <!-- Reply Section -->
+                        <div class="border p-3 rounded bg-light">
                             <label class="fw-bold mb-2">Reply To Ticket</label>
 
+                            <!-- Canned Messages -->
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <div class="fw-bold">Canned Messages</div>
                                 <select id="canned_message_select" class="form-select w-auto">
                                     <option value="">Choose...</option>
+                                    {{-- Populate with canned messages via JS --}}
                                 </select>
                             </div>
 
-                            {{-- Preview box --}}
+                            <!-- Preview Box -->
                             <div id="canned_message_preview" class="border rounded p-3 bg-white shadow-sm mb-3"
                                 style="display:none;">
                                 <div class="d-flex justify-content-between align-items-start">
@@ -89,18 +77,20 @@
                                         <h6 id="canned_title" class="fw-bold mb-2"></h6>
                                         <div id="canned_body" class="text-muted small"></div>
                                     </div>
-                                    <button type="button" id="use_message_btn" class="btn btn-sm btn-primary ms-3">Use This
-                                        Message</button>
+                                    <button type="button" id="use_message_btn" class="btn btn-sm btn-primary ms-3">
+                                        Use This Message
+                                    </button>
                                 </div>
                             </div>
 
-                            {{-- Reply textarea --}}
-                            <textarea id="reply_body" name="reply_body" class="form-control" rows="5"
+                            <!-- Reply Textarea & Attachments -->
+                            <textarea id="reply_body" name="reply_body" class="form-control mb-2" rows="5"
                                 placeholder="Type your reply..."></textarea>
                             <input type="file" id="attachments" name="attachments[]" class="form-control my-2 w-50"
                                 multiple>
+
+                            <!-- Status & Submit -->
                             <div class="d-flex align-items-center justify-content-between mt-3">
-                                {{-- Status --}}
                                 <div class="d-flex align-items-center w-50 me-3">
                                     <label for="status" class="fw-bold mb-0 me-2">Set Status:</label>
                                     <select class="form-select" id="status" name="status">
@@ -115,25 +105,22 @@
                                     </select>
                                 </div>
 
-                            
-
-                                {{-- Reply Button --}}
                                 <button class="btn btn-success w-25" type="button" id="reply_submit_btn">Reply</button>
                             </div>
-
                         </div>
-
-
                     </div>
                 </div>
             </div>
 
+
             <!-- Right Section -->
             <div class="col-lg-4">
+
                 <!-- Ticket Info -->
                 <div class="card mb-3">
                     <div class="card-header bg-light fw-bold">Ticket Information</div>
                     <div class="card-body small">
+
                         <p><strong>Ticket Track ID:</strong> {{ $ticket->ticket_track_id }}</p>
                         <p><strong>Ticket User:</strong> {{ $ticket->siteUser->username ?? 'N/A' }}</p>
                         <p><strong>Email:</strong> {{ $ticket->siteUser->email ?? 'N/A' }}</p>
@@ -143,19 +130,16 @@
                         <p><strong>Service:</strong> {{ $ticket->service->name ?? 'N/A' }}</p>
                         <p><strong>Service URL:</strong> {{ $ticket->service_url ?? '-' }}</p>
 
-                        <p class="mt-2"><strong>Assigned On:</strong>
+                        <p class="mt-2">
+                            <strong>Assigned On:</strong>
                             @if(is_null($ticket->assigned_to))
                                 <a href="{{ route('admin.tickets.set_assign', $ticket->id) }}" class="btn btn-sm btn-success">
                                     <i class="bi bi-person-plus-fill"></i> Set Assign
                                 </a>
                             @else
                                 <div class="d-flex align-items-center mt-2">
-                                    @if(!empty($ticket->assignee->img_url))
-                                        <img src="{{ asset($ticket->assignee->img_url) }}" class="rounded-circle" width="35"
-                                            height="35">
-                                    @else
-                                        <img src="{{ asset('images/default-user.png') }}" class="rounded-circle" width="35" height="35">
-                                    @endif
+                                    <img src="{{ asset($ticket->assignee->img_url ?? 'images/default-user.png') }}"
+                                        class="rounded-circle" width="35" height="35">
                                     <div class="ms-2">
                                         <div class="fw-bold">{{ $ticket->assignee->user ?? 'App User' }}</div>
                                         <small class="text-muted">{{ $ticket->assignee->role->role_name ?? 'No Role' }}</small>
@@ -164,96 +148,74 @@
                             @endif
                         </p>
 
-                        <p><strong>Opened:</strong> {{ $ticket->opened_time }}</p>
+                        <p><strong>Opened:</strong>
+                            {{ \Carbon\Carbon::parse($ticket->opened_time)->format('d M Y, h:i A') }}</p>
                         <p><strong>Status:</strong> {{ ucfirst($ticket->status) }}</p>
-
                         <p><strong>Last Updated:</strong> {{ $ticket->updated_at->diffForHumans() }}</p>
-
 
                     </div>
                     <hr>
-                    <!-- Attachments Section -->
+
+                    <!-- Attachments -->
                     @if($ticket->attachments && $ticket->attachments->count())
                         <div class="m-2">
-                            <h6 class="fw-bold mb-1">📎 Attachments</h6>
-                            <div class="d-flex flex-wrap gap-3 mt-2">
+                            <h6 class="fw-bold mb-2">📎 Attachments</h6>
+                            <div class="d-flex flex-wrap gap-2 mt-2">
                                 @foreach($ticket->attachments as $file)
                                     @php
-                                        $isImage = in_array(strtolower(pathinfo($file->file_name, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                                        $ext = strtolower(pathinfo($file->file_name, PATHINFO_EXTENSION));
+                                        $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
                                     @endphp
 
-                                    @if($isImage)
-                                        <!-- Image thumbnail -->
-                                        <div class="border p-2 rounded bg-light text-center" style="width: 120px;">
-                                            <a href="{{ asset('storage/' . $file->file_path) }}" target="_blank">
-                                                <img src="{{ asset('storage/' . $file->file_path) }}" alt="{{ $file->file_name }}"
-                                                    class="img-fluid rounded mb-1" style="max-height: 100px;">
-                                            </a>
-                                            <div class="small text-truncate">{{ $file->file_name }}</div>
-                                        </div>
-                                    @else
-                                        <!-- Non-image file -->
-                                        <div class="border p-2 rounded bg-light d-flex align-items-center">
-                                            <i class="bi bi-paperclip me-2"></i>
-                                            <a href="{{ asset('storage/' . $file->file_path) }}" target="_blank"
-                                                class="text-decoration-none small">
-                                                {{ $file->file_name }}
-                                            </a>
-                                        </div>
-                                    @endif
+                                    <div class="border p-2 rounded bg-light text-center" style="width: 120px;">
+                                        <a href="{{ asset('storage/' . $file->file_path) }}" target="_blank">
+                                            @if($isImage)
+                                                <img src="{{ asset('storage/' . $file->file_path) }}" class="img-fluid rounded mb-1"
+                                                    style="max-height:100px;" alt="{{ $file->file_name }}">
+                                            @else
+                                                <i class="bi bi-paperclip fs-3"></i>
+                                            @endif
+                                        </a>
+                                        <div class="small text-truncate">{{ $file->file_name }}</div>
+                                    </div>
                                 @endforeach
                             </div>
                         </div>
                     @else
-                        <p class="text-muted mt-3">No attachments found.</p>
+                        <p class="text-muted mt-2">No attachments found.</p>
                     @endif
-
                 </div>
 
                 <!-- Admin Notes -->
-                <!-- Admin Notes -->
-                <div class="card mb-3" id="admin-notes-card">
+                <div class="card mb-3">
                     <div
                         class="card-header bg-success text-white fw-bold d-flex justify-content-between align-items-center">
                         <span>Admin Notes</span>
                         <button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#addNoteForm">
-                            + Add Note
-                        </button>
+                            data-bs-target="#addNoteForm">+ Add Note</button>
                     </div>
-
                     <div class="card-body">
-                        @if($ticket->adminNotes->isEmpty())
-                            <div class="small text-muted"><em>No notes found</em></div>
-                        @else
-                            @foreach($ticket->adminNotes()->latest()->get() as $note)
-                                <div class="border-bottom mb-3 pb-2">
-                                    <div class="d-flex justify-content-between">
-
-                                        <strong>{{ $note->creator->user }}</strong> --
-                                        <strong>
-                                            {{ $note->creator->role->role_name }}
-                                        </strong>
-                                        <br>
-                                        <span class="text-muted small">
-                                            {{ $note->created_at->format('d M Y, h:i A') }}
-                                        </span>
-                                    </div>
-                                    <div
-                                        class="badge bg-{{ $note->visibility === 'team' ? 'info' : ($note->visibility === 'public' ? 'primary' : 'secondary') }}">
-                                        {{ ucfirst($note->visibility) }}
-
-                                    </div>
-                                    @if($note->title)
-                                        <div class="fw-semibold mt-1">{{ $note->title }}</div>
-                                    @endif
-                                    <div class="text-muted small mt-1">{!! nl2br(e($note->body)) !!}</div>
+                        @forelse($ticket->adminNotes as $note)
+                            <div class="border-bottom mb-3 pb-2">
+                                <div class="d-flex justify-content-between">
+                                    <strong>{{ $note->creator->user }}</strong> --
+                                    <strong>{{ $note->creator->role->role_name }}</strong><br>
+                                    <span class="text-muted small">{{ $note->created_at->format('d M Y, h:i A') }}</span>
                                 </div>
-                            @endforeach
-                        @endif
+                                <div
+                                    class="badge bg-{{ $note->visibility === 'team' ? 'info' : ($note->visibility === 'public' ? 'primary' : 'secondary') }}">
+                                    {{ ucfirst($note->visibility) }}
+                                </div>
+                                @if($note->title)
+                                <div class="fw-semibold mt-1">{{ $note->title }}</div>@endif
+                                <div class="text-muted small mt-1">{!! nl2br(e($note->body)) !!}</div>
+                            </div>
+                        @empty
+                            <div class="small text-muted"><em>No notes found</em></div>
+                        @endforelse
                     </div>
 
-                    <!-- Collapsible Add Note Form -->
+                    <!-- Add Note Form -->
                     <div class="collapse" id="addNoteForm">
                         <div class="card-footer bg-light">
                             <form action="{{ route('admin.notes.store') }}" method="POST">
@@ -261,8 +223,7 @@
                                 <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
                                 <input type="hidden" name="ticket_track_id" value="{{ $ticket->ticket_track_id }}">
                                 <input type="hidden" name="note_type" value="Ticket-Replies">
-                               <input type="hidden" name="client_id" value="{{  $ticket->siteUser->id  }}">
-                                
+                                <input type="hidden" name="client_id" value="{{ $ticket->siteUser->id }}">
 
                                 <div class="mb-2">
                                     <label class="form-label small">Title</label>
@@ -286,9 +247,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-2 d-flex align-items-end justify-content-end">
-                                        <button type="submit" class="btn btn-success btn-sm">
-                                            💾 Save Note
-                                        </button>
+                                        <button type="submit" class="btn btn-success btn-sm">💾 Save Note</button>
                                     </div>
                                 </div>
                             </form>
@@ -296,12 +255,11 @@
                     </div>
                 </div>
 
-
                 <!-- Admin Work Log -->
                 <div class="card mb-3">
                     <div
                         class="card-header bg-success text-white fw-bold d-flex justify-content-between align-items-center">
-                        <span>Admin Work Log -?</span>
+                        <span>Admin Work Log</span>
                         <button class="btn btn-light btn-sm">+ Add Log</button>
                     </div>
                     <div class="card-body small text-muted">
@@ -313,12 +271,19 @@
                 <div class="card">
                     <div class="card-header bg-light fw-bold">Ticket History</div>
                     <div class="card-body small text-muted">
-                        <p><strong>Opened By:</strong> {{ $ticket->siteUser->username ?? 'N/A' }} <br>
-                            <small>{{ $ticket->opened_time }}</small>
+                        <p><strong>Opened By:</strong> {{ $ticket->siteUser->username ?? 'N/A' }}<br>
+                            <small>{{ \Carbon\Carbon::parse($ticket->opened_time)->format('d M Y, h:i A') }}</small>
                         </p>
                     </div>
                 </div>
+
             </div>
+
+
+
+
+
+
         </div>
     </div>
 @endsection
@@ -401,7 +366,7 @@
             // ✅ Load replies from DB
             function loadReplies() {
                 $.ajax({
-       url: "{{ url('tickets') }}/" + ticketId + "/replies",
+                    url: "{{ url('tickets') }}/" + ticketId + "/replies",
                     method: 'GET',
                     success: function (res) {
                         const replies = res.data || [];
@@ -433,29 +398,29 @@
                 let attachmentsHTML = '';
                 if (reply.attachments && reply.attachments.length > 0) {
                     attachmentsHTML = `
-                        <ul class="list-unstyled small mt-2">
-                            ${reply.attachments.map(att => {
+                                <ul class="list-unstyled small mt-2">
+                                    ${reply.attachments.map(att => {
                         const filePath = typeof att === 'string' ? att : att.file_path;
                         const fileName = typeof att === 'string'
                             ? filePath.split('/').pop()
                             : (att.file_name || filePath.split('/').pop());
                         return `
-                                    <li>
-                                        <a href="/storage/${filePath}" target="_blank">📎 ${fileName}</a>
-                                    </li>`;
+                                            <li>
+                                                <a href="/storage/${filePath}" target="_blank">📎 ${fileName}</a>
+                                            </li>`;
                     }).join('')}
-                        </ul>`;
+                                </ul>`;
                 }
 
                 const html = `
-                    <div class="reply-wrapper ${isStaff ? 'text-end' : 'text-start'} mb-3">
-                        <div class="${bubbleClass}">
-                            <div class="fw-semibold">${senderName}</div>
-                            <div class="mt-1">${reply.reply_body}</div>
-                            ${attachmentsHTML}
-                            <div class="small text-muted mt-1">${new Date(reply.created_at).toLocaleString()}</div>
-                        </div>
-                    </div>`;
+                            <div class="reply-wrapper ${isStaff ? 'text-end' : 'text-start'} mb-3">
+                                <div class="${bubbleClass}">
+                                    <div class="fw-semibold">${senderName}</div>
+                                    <div class="mt-1">${reply.reply_body}</div>
+                                    ${attachmentsHTML}
+                                    <div class="small text-muted mt-1">${new Date(reply.created_at).toLocaleString()}</div>
+                                </div>
+                            </div>`;
                 $('#ticket_replies_box').append(html);
             }
 
@@ -472,7 +437,7 @@
                 let formData = new FormData();
                 formData.append('ticket_id', ticketId);
                 formData.append('reply_body', replyBody);
-              
+
                 formData.append('reply_type', 'public');
                 formData.append('_token', '{{ csrf_token() }}');
 
@@ -485,7 +450,7 @@
 
                 $('#reply_submit_btn').prop('disabled', true).text('Sending...');
 
-                
+
                 $.ajax({
                     url: "{{ route('ticket.replies.store') }}",
                     method: 'POST',
@@ -502,7 +467,7 @@
                             loadReplies();
                             // Clear input fields
                             $('#reply_body').val('');
-                            
+
 
 
                         } else {

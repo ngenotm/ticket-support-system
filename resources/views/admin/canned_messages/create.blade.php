@@ -3,30 +3,30 @@
 
 @section('content')
 <div class="container mt-4">
-    <h4>➕ Add New Canned Message</h4>
-    <hr>
+    <h4 class="fw-semibold text-primary mb-3">➕ Add New Canned Message</h4>
 
-    <form action="{{ route('admin.canned_messages.store') }}" method="POST">
+    <form action="{{ route('admin.canned_messages.store') }}" method="POST" class="mb-5">
         @csrf
 
-        <div class="card shadow-sm p-4">
+        <div class="card border-0 shadow-sm rounded-3 p-4">
             <div class="row g-3">
+
                 {{-- Title --}}
                 <div class="col-md-4">
-                    <label class="form-label fw-bold">Title</label>
-                    <input type="text" name="title" class="form-control" required>
+                    <label class="form-label small fw-semibold text-secondary">Title</label>
+                    <input type="text" name="title" class="form-control flat-input" required>
                 </div>
 
                 {{-- Subject --}}
                 <div class="col-md-4">
-                    <label class="form-label fw-bold">Subject</label>
-                    <input type="text" name="subject" class="form-control">
+                    <label class="form-label small fw-semibold text-secondary">Subject</label>
+                    <input type="text" name="subject" class="form-control flat-input">
                 </div>
 
                 {{-- Type --}}
                 <div class="col-md-4">
-                    <label class="form-label fw-bold">Type</label>
-                    <select name="type" class="form-select" required>
+                    <label class="form-label small fw-semibold text-secondary">Type</label>
+                    <select name="type" class="form-select flat-input" required>
                         <option value="text">Text</option>
                         <option value="html">HTML</option>
                         <option value="markdown">Markdown</option>
@@ -35,8 +35,8 @@
 
                 {{-- Category --}}
                 <div class="col-md-4">
-                    <label class="form-label fw-bold">Category</label>
-                    <select name="category_id" id="category_id" class="form-select">
+                    <label class="form-label small fw-semibold text-secondary">Category</label>
+                    <select name="category_id" id="category_id" class="form-select flat-input">
                         <option value="">Select Category</option>
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -46,36 +46,36 @@
 
                 {{-- Subcategory --}}
                 <div class="col-md-4">
-                    <label class="form-label fw-bold">Subcategory</label>
-                    <select name="subcategory_id" id="subcategory_id" class="form-select">
+                    <label class="form-label small fw-semibold text-secondary">Subcategory</label>
+                    <select name="subcategory_id" id="subcategory_id" class="form-select flat-input">
                         <option value="">Select Subcategory</option>
                     </select>
                 </div>
 
                 {{-- Service --}}
                 <div class="col-md-4">
-                    <label class="form-label fw-bold">Service</label>
-                    <select name="service_id" id="service_id" class="form-select">
+                    <label class="form-label small fw-semibold text-secondary">Service</label>
+                    <select name="service_id" id="service_id" class="form-select flat-input">
                         <option value="">Select Service</option>
                     </select>
                 </div>
 
                 {{-- Body --}}
                 <div class="col-12">
-                    <label class="form-label fw-bold">Body</label>
-                    <textarea name="body" rows="5" class="form-control" required></textarea>
+                    <label class="form-label small fw-semibold text-secondary">Body</label>
+                    <textarea name="body" rows="5" class="form-control flat-input" required></textarea>
                 </div>
 
                 {{-- Is Global --}}
                 <div class="col-md-4 form-check mt-3">
                     <input type="checkbox" name="is_global" id="is_global" class="form-check-input">
-                    <label for="is_global" class="form-check-label fw-bold">Make Global</label>
+                    <label for="is_global" class="form-check-label fw-semibold small text-secondary">Make Global</label>
                 </div>
 
                 {{-- Status --}}
                 <div class="col-md-4 mt-3">
-                    <label class="form-label fw-bold">Status</label>
-                    <select name="status" class="form-select">
+                    <label class="form-label small fw-semibold text-secondary">Status</label>
+                    <select name="status" class="form-select flat-input">
                         <option value="active">Active</option>
                         <option value="inactive">Inactive</option>
                     </select>
@@ -83,8 +83,12 @@
             </div>
 
             <div class="d-flex justify-content-end mt-4 gap-2">
-                <a href="{{ route('admin.canned_messages.index') }}" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-success">Save</button>
+                <a href="{{ route('admin.canned_messages.index') }}" class="btn btn-light border shadow-sm px-4">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-success px-4">
+                    Save
+                </button>
             </div>
         </div>
     </form>
@@ -141,3 +145,56 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
+
+<style>
+/* === Flat, Business-Professional Style === */
+.card {
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+.flat-input {
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.flat-input:focus {
+    border-color: #2d5be3;
+    box-shadow: 0 0 0 2px rgba(45,91,227,0.15);
+}
+
+.flat-input:hover {
+    border-color: #b8b8b8;
+}
+
+.btn-success {
+    background-color: #00b386;
+    border: none;
+    font-weight: 500;
+}
+
+.btn-success:hover {
+    background-color: #009e75;
+}
+
+.btn-light {
+    color: #333;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-light:hover {
+    background-color: #ebedef;
+}
+
+label.form-label {
+    margin-bottom: 0.3rem;
+}
+
+textarea {
+    resize: vertical;
+}
+</style>

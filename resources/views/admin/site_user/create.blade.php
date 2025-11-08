@@ -3,15 +3,23 @@
 @section('page_title', 'Add Site User')
 
 @section('content')
-    <div class="card">
-        <div class="card-header bg-success text-white">
-            <h5 class="mb-0">Add New Site User</h5>
+<div class="container mt-4">
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-white border-0 d-flex align-items-center justify-content-between">
+            <h5 class="mb-0 fw-semibold text-secondary">
+                <i class="bi bi-person-plus me-2 text-success"></i> Add New Site User
+            </h5>
+            <a href="{{ url('admin/site_user') }}" class="btn btn-outline-secondary rounded-3">
+                <i class="bi bi-arrow-left me-1"></i> Back
+            </a>
         </div>
+
         <div class="card-body">
             @if($errors->any())
-                <div class="alert alert-danger">
-                    <strong>Error!</strong> Please check form fields.
-                    <ul>
+                <div class="alert alert-danger rounded-3 shadow-sm">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong>Please correct the following errors:</strong>
+                    <ul class="mt-2 mb-0 ps-3">
                         @foreach($errors->all() as $err)
                             <li>{{ $err }}</li>
                         @endforeach
@@ -21,103 +29,110 @@
 
             <form method="POST" action="{{ url('admin/site_user/store') }}" enctype="multipart/form-data">
                 @csrf
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label required">First Name </label>
-                        <input type="text" name="first_name" class="form-control" value="{{ old('first_name') }}" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label ">Last Name</label>
-                        <input type="text" name="last_name" class="form-control" value="{{ old('last_name') }}">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label required">Username </label>
-                        <input type="text" name="username" class="form-control" value="{{ old('username') }}" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label required">Email </label>
-                        <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label required ">Password </label>
-                        <input type="password" name="password" class="form-control" required>
+                <div class="row g-3">
+                    <!-- Personal Info -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold required">First Name</label>
+                        <input type="text" name="first_name" class="form-control rounded-3" value="{{ old('first_name') }}" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Date of Birth</label>
-                        <input type="date" name="dob" value="{{ old('dob') }}" class="form-control">
+                        <label class="form-label fw-semibold">Last Name</label>
+                        <input type="text" name="last_name" class="form-control rounded-3" value="{{ old('last_name') }}">
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label ">Gender</label>
-                        <select name="gender" class="form-select">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold required">Username</label>
+                        <input type="text" name="username" class="form-control rounded-3" value="{{ old('username') }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold required">Email</label>
+                        <input type="email" name="email" class="form-control rounded-3" value="{{ old('email') }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold required">Password</label>
+                        <input type="password" name="password" class="form-control rounded-3" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Date of Birth</label>
+                        <input type="date" name="dob" class="form-control rounded-3" value="{{ old('dob') }}">
+                    </div>
+
+                    <!-- Profile Info -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Gender</label>
+                        <select name="gender" class="form-select rounded-3">
                             <option value="">Select</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
+                            <option value="Male" {{ old('gender') == 'Male' ? 'selected' : '' }}>Male</option>
+                            <option value="Female" {{ old('gender') == 'Female' ? 'selected' : '' }}>Female</option>
+                            <option value="Other" {{ old('gender') == 'Other' ? 'selected' : '' }}>Other</option>
                         </select>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label required">Status </label>
-                        <select name="status" class="form-select" required>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold required">Status</label>
+                        <select name="status" class="form-select rounded-3" required>
                             <option value="Active">Active</option>
                             <option value="Inactive">Inactive</option>
                             <option value="Locked">Locked</option>
                             <option value="Suspended">Suspended</option>
                         </select>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label required">User Type </label>
-                        <select name="user_type" class="form-select" required>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold required">User Type</label>
+                        <select name="user_type" class="form-select rounded-3" required>
                             <option value="User">User</option>
                             <option value="Admin">Admin</option>
                             <option value="Guest">Guest</option>
                         </select>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label ">Phone</label>
-                        <input type="text" name="phone" class="form-control" value="{{ old('phone') }}">
+
+                    <!-- Contact Info -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Phone</label>
+                        <input type="text" name="phone" class="form-control rounded-3" value="{{ old('phone') }}">
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label ">Country</label>
-                        <input type="text" name="country" class="form-control" value="{{ old('country') }}">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Country</label>
+                        <input type="text" name="country" class="form-control rounded-3" value="{{ old('country') }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Region</label>
+                        <input type="text" name="region" class="form-control rounded-3" value="{{ old('region') }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">City</label>
+                        <input type="text" name="city" class="form-control rounded-3" value="{{ old('city') }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">ZIP</label>
+                        <input type="text" name="zip" class="form-control rounded-3" value="{{ old('zip') }}">
                     </div>
 
-
-                      <div class="col-md-6">
-                        <label class="form-label">Region</label>
-                        <input type="text" name="region" value="{{ old('region') }}" class="form-control">
+                    <div class="col-md-12">
+                        <label class="form-label fw-semibold">Address</label>
+                        <textarea name="address" class="form-control rounded-3" rows="2">{{ old('address') }}</textarea>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">City</label>
-                        <input type="text" name="city" value="{{ old('city') }}" class="form-control">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">ZIP</label>
-                        <input type="text" name="zip" value="{{ old('zip') }}" class="form-control">
-                    </div>
-
-
-                    <div class="col-md-12 mb-3">
-                        <label class="form-label ">Address</label>
-                        <textarea name="address" class="form-control" rows="2">{{ old('address') }}</textarea>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label ">Photo</label>
-                        <input type="file" name="photo_url" class="form-control" accept=".jpg,.jpeg,.png,.webp,.gif">
+                        <label class="form-label fw-semibold">Photo</label>
+                        <input type="file" name="photo_url" class="form-control rounded-3" accept=".jpg,.jpeg,.png,.webp,.gif">
+                        <small class="text-muted">Accepted formats: JPG, PNG, WEBP, GIF</small>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-between">
-                    <a href="{{ url('admin/site_user') }}" class="btn btn-secondary">Back</a>
-                    <button type="submit" class="btn btn-success">Save User</button>
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="{{ url('admin/site_user') }}" class="btn btn-outline-secondary rounded-3">
+                        <i class="bi bi-x-circle me-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-success rounded-3">
+                        <i class="bi bi-check-circle me-1"></i> Save User
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+</div>
 @endsection
 
+@push('styles')
 <style>
     .required::after {
         content: " *";
@@ -125,3 +140,4 @@
         font-weight: bold;
     }
 </style>
+@endpush
