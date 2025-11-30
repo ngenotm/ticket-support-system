@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-     public function up(): void
+    public function up(): void
     {
         Schema::create('site_user', function (Blueprint $table) {
             $table->id(); // BIGINT UNSIGNED AUTO_INCREMENT
@@ -27,7 +27,7 @@ return new class extends Migration
             // Personal Details
             $table->enum('gender', ['Male', 'Female', 'Other'])->nullable();
             $table->date('dob')->nullable();
-            $table->tinyInteger('age')->unsigned()->virtualAs('TIMESTAMPDIFF(YEAR, dob, CURDATE())');
+            // Removed 'age' generated column
             $table->string('phone', 20)->nullable();
             $table->string('address', 255)->nullable();
             $table->string('city', 100)->nullable();
